@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const admin = require('firebase-admin');
 const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
 const port = 5000;
 
@@ -10,12 +11,13 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const serviceAccount = require("./burj-al-arab-e17d2-firebase-adminsdk-k1bwo-3a504a398e.json");
+const serviceAccount = require("./configs/burj-al-arab-e17d2-firebase-adminsdk-k1bwo-3a504a398e.json");
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
+  databaseUrl: process.env.FIRE_DB
 });
 
-const uri = "mongodb+srv://burjAlArab:burjAlArab@cluster0.6dt9c.mongodb.net/burjAlArab?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.6dt9c.mongodb.net/burjAlArab?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 client.connect(err => {
